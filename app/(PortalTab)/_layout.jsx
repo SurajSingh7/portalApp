@@ -4,6 +4,7 @@ import { Tabs } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { View, StatusBar, Text, StyleSheet } from 'react-native';
 import { Feather, MaterialIcons } from '@expo/vector-icons';
+import PortalHeaderComp from '../../components/common/header/portalHeader/PortalHeaderComp';
 
 // Mock permissions (no context used now)
 const DEFAULT_PERMISSIONS = [
@@ -27,8 +28,6 @@ const getIconForTab = (name, { color, size }) => {
   switch (name) {
     case 'portalhome':
       return <Feather name="home" size={size} color={color} />;
-    case 'portalhi':
-      return <Feather name="smile" size={size} color={color} />;
     case 'portalteamreport':
       return <MaterialIcons name="people-outline" size={size} color={color} />;
     default:
@@ -44,7 +43,6 @@ const PortalTabLayout = () => {
 
     const PERMISSION_TO_ROUTE_MAP = {
       'portalhome': { routeName: 'portalHome', title: 'Home' },
-      'portalhi': { routeName: 'portalHi', title: 'Hi' },
       'portalteamreport': { routeName: 'portalTeamReport', title: 'Team Report' },
     };
 
@@ -71,6 +69,7 @@ const PortalTabLayout = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <PortalHeaderComp/>
       <View style={styles.container}>
         <Tabs
           screenOptions={{

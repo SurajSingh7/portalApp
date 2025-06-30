@@ -38,7 +38,7 @@ const HomeComp = () => {
 
         <TouchableOpacity
           className="bg-orange-300 rounded-2xl py-4 shadow-lg"
-          onPress={() => router.push('/portal')}
+          onPress={() => router.push('/(RosterTab)/searchEmployeeandEmployees')}
         >
           <Text className="text-white text-center text-lg font-bold">Go to Roster</Text>
         </TouchableOpacity>

@@ -30,11 +30,9 @@ const RosterTabLayout = () => {
             },
             tabBarIcon: ({ color, size }) => {
               switch (route.name) {
-                case 'portal':
-                  return <Feather name="home" size={size} color={color} />;
-                case 'searchEmployee':
+                case 'searchEmployeeandEmployees':
                   return <Feather name="search" size={size} color={color} />;
-                case 'employeeData':
+                case 'shiftActivityLog':
                   return <MaterialIcons name="people-outline" size={size} color={color} />;
                 case 'createShift':
                   return <Entypo name="clock" size={size} color={color} />;
@@ -46,11 +44,11 @@ const RosterTabLayout = () => {
             },
           })}
         >
-          <Tabs.Screen name="portal" options={{ title: "Home" }} />
-          <Tabs.Screen name="searchEmployee" options={{ title: "Search" }} />
-          <Tabs.Screen name="employeeData" options={{ title: "Employees" }} />
-          <Tabs.Screen name="createShift" options={{ title: "Shift" }} />
+        
+          <Tabs.Screen name="searchEmployeeandEmployees" options={{ title: "Search" }} />
+          <Tabs.Screen name="shiftActivityLog" options={{ title: "ActivityLog" }} />
           <Tabs.Screen name="rosterDashboard" options={{ title: "Dashboard" }} />
+          <Tabs.Screen name="createShift" options={{ title: "Shift" }} />
         </Tabs>
       </View>
     </SafeAreaView>
