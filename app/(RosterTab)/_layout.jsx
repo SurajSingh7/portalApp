@@ -30,7 +30,7 @@ const RosterTabLayout = () => {
             },
             tabBarIcon: ({ color, size }) => {
               switch (route.name) {
-                case 'searchEmployeeandEmployees':
+                case 'searchEmployeeandList':
                   return <Feather name="search" size={size} color={color} />;
                 case 'shiftActivityLog':
                   return <MaterialIcons name="people-outline" size={size} color={color} />;
@@ -45,7 +45,7 @@ const RosterTabLayout = () => {
           })}
         >
         
-          <Tabs.Screen name="searchEmployeeandEmployees" options={{ title: "Search" }} />
+          <Tabs.Screen name="searchEmployeeandList" options={{ title: "Search" }} />
           <Tabs.Screen name="shiftActivityLog" options={{ title: "ActivityLog" }} />
           <Tabs.Screen name="rosterDashboard" options={{ title: "Dashboard" }} />
           <Tabs.Screen name="createShift" options={{ title: "Shift" }} />

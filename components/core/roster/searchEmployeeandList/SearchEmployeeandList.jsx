@@ -1,43 +1,37 @@
-
 import { View, Text, Pressable } from "react-native"
 import { useState, useCallback } from "react"
-import EmployeeDetails from "./EmployeeDetails"
-import CircularNews from "./CircularNews"
-import QuickLinks from "./QuickLinks"
 import { useFocusEffect } from "@react-navigation/native"
+import SearchEmployeeComp from "./searchEmployeeComp/SearchEmployeeComp"
+import EmployeeListComp from "./EmployeeListComp"
 
-const HomeComp = () => {
-  const [activeTab, setActiveTab] = useState("employee")
+const SearchEmployeeandList = () => {
+  const [activeTab, setActiveTab] = useState("search")
 
-  // Reset activeTab every time the screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      setActiveTab("employee")
+      setActiveTab("search")
     }, []),
   )
 
   const renderTab = () => {
     switch (activeTab) {
-      case "employee":
-        return <EmployeeDetails />
-      case "circular":
-        return <CircularNews />
-      case "links":
-        return <QuickLinks />
+      case "search":
+        return <SearchEmployeeComp />
+      case "list":
+        return <EmployeeListComp />
       default:
         return null
     }
   }
 
   const tabList = [
-    { id: "employee", label: "Employee Details" },
-    { id: "circular", label: "Circular/News" },
-    { id: "links", label: "Quick Links" },
+    { id: "search", label: "Search Employee" },
+    { id: "list", label: "Employee List" },
   ]
 
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      {/* Tab Header - Fixed */}
+      {/* Tab Header */}
       <View className="flex-row justify-around bg-orange-50 border-b border-orange-200">
         {tabList.map((tab) => (
           <Pressable key={tab.id} onPress={() => setActiveTab(tab.id)} className="py-3 flex-1 items-center">
@@ -49,10 +43,10 @@ const HomeComp = () => {
         ))}
       </View>
 
-      {/* Tab Content - Flexible */}
+      {/* Tab Content */}
       <View style={{ flex: 1 }}>{renderTab()}</View>
     </View>
   )
 }
 
-export default HomeComp
+export default SearchEmployeeandList

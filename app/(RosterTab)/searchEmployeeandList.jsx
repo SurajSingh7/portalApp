@@ -1,10 +1,11 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import SearchEmployeeComp from '../../components/core/roster/searchEmployee/SearchEmployeeComp'
+import SearchEmployeeandList from '../../components/core/roster/searchEmployeeandList/SearchEmployeeandList'
+
 
 const searchEmployee = () => {
   return (
-     <SearchEmployeeComp/>
+    <SearchEmployeeandList/>
   )
 }
 
