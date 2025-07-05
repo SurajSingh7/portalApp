@@ -9,7 +9,7 @@ import { getToken } from "../../../../../utils/storage"
 import Toast from "react-native-toast-message"
 import Icon from "react-native-vector-icons/Feather"
 
-const ShiftUpdater = ({ isOpen, onClose, employeeCode, employeeName, login_id, onUpdateSuccess }) => {
+const CustomShiftUpdater = ({ isOpen, onClose, employeeCode, employeeName, login_id, onUpdateSuccess }) => {
   const [shiftNames, setShiftNames] = useState([])
   const [shiftLoading, setShiftLoading] = useState(false)
   const [shifts, setShifts] = useState([])
@@ -331,7 +331,7 @@ const ShiftUpdater = ({ isOpen, onClose, employeeCode, employeeName, login_id, o
         <StatusBar barStyle="light-content" backgroundColor="#059669" />
 
         {/* Compact Header */}
-        <View className="bg-emerald-600 pt-10 pb-3 px-3">
+        <View className="bg-emerald-600 pt-3 pb-2 px-3">
           <View className="flex-row justify-between items-center">
             <View className="flex-1">
               <View className="flex-row items-center mb-1">
@@ -347,9 +347,9 @@ const ShiftUpdater = ({ isOpen, onClose, employeeCode, employeeName, login_id, o
             </View>
             <TouchableOpacity
               onPress={onClose}
-              className="w-6 h-6 bg-white/20 rounded-full items-center justify-center"
+              className="w-9 h-9 bg-white/20 rounded-full items-center justify-center"
             >
-              <Icon name="x" size={14} color="white" />
+              <Icon name="x" size={26} color="white" />
             </TouchableOpacity>
           </View>
         </View>
@@ -606,4 +606,4 @@ const ShiftUpdater = ({ isOpen, onClose, employeeCode, employeeName, login_id, o
   )
 }
 
-export default ShiftUpdater
+export default CustomShiftUpdater

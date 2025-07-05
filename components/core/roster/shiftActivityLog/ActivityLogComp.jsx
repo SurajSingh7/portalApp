@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { View, Text, TextInput, TouchableOpacity, ScrollView, RefreshControl, Alert } from "react-native"
 import { SafeAreaView } from "react-native-safe-area-context"
 import { Search, ChevronLeft, ChevronRight, RefreshCw, Activity } from "lucide-react-native"
-import { API_BASE_URL } from "../../../../config/api"
+import { API_BASE_URL, APP_BACKGROUND_COLOR } from "../../../../config/api"
 import { getToken } from "../../../../utils/storage"
 
 const ActivityLogs = () => {
@@ -218,16 +218,17 @@ const ActivityLogs = () => {
   )
 
   return (
-    <SafeAreaView className="flex-1 bg-blue-200">
+    // <SafeAreaView className={`flex-1 bg-${APP_BACKGROUND_COLOR}-50`}>
       <ScrollView
-        className="flex-1 px-4"
+        // className="flex-1 px-4"
+        className={`flex-1 bg-${APP_BACKGROUND_COLOR}-50 px-4`}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
-        <View className="mb-6 mt-4">
+        <View className="mb-6 mt-4 ">
           <View className="flex-row items-center mb-3">
-            <View className="bg-green-600 p-2 rounded-2xl shadow-lg">
+            <View className="bg-green-500 p-2 rounded-2xl shadow-lg">
               <Activity size={24} color="white" />
             </View>
             <View className="ml-4">
@@ -401,7 +402,7 @@ const ActivityLogs = () => {
           </>
         )}
       </ScrollView>
-    </SafeAreaView>
+    // {/* </SafeAreaView> */}
   )
 }
 

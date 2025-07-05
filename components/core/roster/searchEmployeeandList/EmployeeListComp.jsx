@@ -9,7 +9,7 @@ import {
   StatusBar,
   Dimensions,
 } from 'react-native';
-import { API_BASE_URL } from '../../../../config/api';
+import { API_BASE_URL, APP_BACKGROUND_COLOR } from '../../../../config/api';
 import { getToken } from '../../../../utils/storage';
 import { useRouter } from 'expo-router';
 
@@ -38,10 +38,7 @@ export default function EmployeeListComp() {
 
     try {
       const token = await getToken();
-      
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
+      if (!token) throw new Error('No authentication token found');
 
       const res = await fetch(
         `${API_BASE_URL}/api/employee-shift-details?page=${pageToFetch}&limit=10`,
@@ -54,12 +51,10 @@ export default function EmployeeListComp() {
         }
       );
 
-      // Check if response is ok
       if (!res.ok) {
         throw new Error(`HTTP ${res.status}: ${res.statusText}`);
       }
 
-      // Check if response is JSON
       const contentType = res.headers.get('content-type');
       if (!contentType || !contentType.includes('application/json')) {
         throw new Error('Server returned non-JSON response');
@@ -68,7 +63,6 @@ export default function EmployeeListComp() {
       const data = await res.json();
       const newEmployees = data?.data || [];
 
-      // Add unique identifiers to prevent duplicate keys
       const employeesWithUniqueIds = newEmployees.map((emp, index) => ({
         ...emp,
         uniqueId: `${emp._id || emp.id || index}_${pageToFetch}_${Date.now()}`,
@@ -80,9 +74,10 @@ export default function EmployeeListComp() {
       } else {
         setEmployees((prev) => {
           if (append) {
-            // Filter out any potential duplicates based on _id
-            const existingIds = new Set(prev.map(emp => emp._id || emp.id));
-            const filteredNew = employeesWithUniqueIds.filter(emp => !existingIds.has(emp._id || emp.id));
+            const existingIds = new Set(prev.map((emp) => emp._id || emp.id));
+            const filteredNew = employeesWithUniqueIds.filter(
+              (emp) => !existingIds.has(emp._id || emp.id)
+            );
             return [...prev, ...filteredNew];
           } else {
             return employeesWithUniqueIds;
@@ -90,13 +85,11 @@ export default function EmployeeListComp() {
         });
         setHasMore(employeesWithUniqueIds.length >= 10);
       }
-      
+
       setError(null);
     } catch (err) {
       console.error('Failed to fetch employees:', err);
       setError(err.message || 'Failed to load employees');
-      
-      // Don't clear employees on error if we're loading more pages
       if (!append) {
         setEmployees([]);
       }
@@ -132,49 +125,70 @@ export default function EmployeeListComp() {
     day: 'numeric',
   });
 
-  const getShiftStatusColor = (shiftTime) => {
-    if (!shiftTime) return 'bg-gray-100 border-gray-200';
-    
-    const currentHour = new Date().getHours();
-    const [startTime] = shiftTime.split(' - ');
-    const shiftHour = parseInt(startTime.split(':')[0]);
-    
-    if (currentHour >= shiftHour && currentHour < shiftHour + 8) {
-      return 'bg-green-100 border-green-200';
-    } else if (currentHour < shiftHour) {
-      return 'bg-blue-100 border-blue-200';
-    } else {
-      return 'bg-gray-100 border-gray-200';
-    }
-  };
+ const getShiftStatusText = (shiftTime) => {
+  if (!shiftTime || typeof shiftTime !== 'string') {
+    return { text: 'Unknown', color: 'text-gray-600' };
+  }
 
-  const getShiftStatusText = (shiftTime) => {
-    if (!shiftTime) return { text: 'Unknown', color: 'text-gray-600' };
-    
-    const currentHour = new Date().getHours();
-    const [startTime] = shiftTime.split(' - ');
-    const shiftHour = parseInt(startTime.split(':')[0]);
-    
-    if (currentHour >= shiftHour && currentHour < shiftHour + 8) {
-      return { text: 'Active', color: 'text-green-600' };
-    } else if (currentHour < shiftHour) {
-      return { text: 'Upcoming', color: 'text-blue-600' };
-    } else {
-      return { text: 'Completed', color: 'text-gray-600' };
-    }
+  // Clean and parse shiftTime
+  const parts = shiftTime.replace(/\s+/g, '').split('-'); // remove spaces and split
+  if (parts.length !== 2) {
+    return { text: 'Unknown', color: 'text-gray-600' };
+  }
+
+  const [start, end] = parts;
+  const now = new Date();
+
+  const startTime = new Date(now);
+  const endTime = new Date(now);
+
+  const [startHour, startMinute] = start.split(':').map(Number);
+  const [endHour, endMinute] = end.split(':').map(Number);
+
+  if (
+    isNaN(startHour) || isNaN(startMinute) ||
+    isNaN(endHour) || isNaN(endMinute)
+  ) {
+    return { text: 'Unknown', color: 'text-gray-600' };
+  }
+
+  startTime.setHours(startHour, startMinute, 0, 0);
+  endTime.setHours(endHour, endMinute, 0, 0);
+
+  // Handle overnight shifts (endTime is earlier than startTime)
+  if (endTime <= startTime) {
+    endTime.setDate(endTime.getDate() + 1);
+  }
+
+  if (now >= startTime && now < endTime) {
+    return { text: 'Active', color: 'text-green-600' };
+  } else if (now < startTime) {
+    return { text: 'Upcoming', color: 'text-blue-600' };
+  } else {
+    return { text: 'Completed', color: 'text-red-600' };
+  }
+};
+
+
+  const getShiftStatusColor = (shiftTime) => {
+    const status = getShiftStatusText(shiftTime);
+    if (status.text === 'Active') return 'bg-green-100 border-green-200';
+    if (status.text === 'Upcoming') return 'bg-blue-100 border-blue-200';
+    if (status.text === 'Completed') return 'bg-red-100 border-red-200';
+    return 'bg-gray-100 border-gray-200';
   };
 
   const renderEmployeeCard = ({ item, index }) => {
     const shiftDetails = item.shiftDetails || {};
     const shiftStatus = getShiftStatusText(shiftDetails.shiftTime);
     const cardBg = getShiftStatusColor(shiftDetails.shiftTime);
-    
+
     return (
       <TouchableOpacity
         activeOpacity={0.7}
         className={`bg-white rounded-2xl shadow-lg m-2 overflow-hidden border ${cardBg}`}
         style={{
-          width: (width - 32) / 2 - 8, // Two cards per row with margins
+          width: (width - 32) / 2 - 8,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.1,
@@ -182,7 +196,6 @@ export default function EmployeeListComp() {
           elevation: 5,
         }}
       >
-        {/* Header with status */}
         <View className="p-3 pb-2">
           <View className="flex-row justify-between items-start mb-2">
             <View className="flex-1 pr-2">
@@ -193,16 +206,22 @@ export default function EmployeeListComp() {
                 ID: {shiftDetails.employeeCode || 'N/A'}
               </Text>
             </View>
-            <View className={`px-2 py-1 rounded-full ${shiftStatus.color.includes('green') ? 'bg-green-100' : shiftStatus.color.includes('blue') ? 'bg-blue-100' : 'bg-gray-100'}`}>
+            <View
+              className={`px-2 py-1 rounded-full ${
+                shiftStatus.color.includes('green')
+                  ? 'bg-green-100'
+                  : shiftStatus.color.includes('blue')
+                  ? 'bg-blue-100'
+                  : 'bg-gray-100'
+              }`}
+            >
               <Text className={`text-xs font-semibold ${shiftStatus.color}`}>
                 {shiftStatus.text}
               </Text>
             </View>
           </View>
 
-          {/* Content in compact rows */}
           <View className="space-y-2">
-            {/* Shift Time */}
             <View className="flex-row items-center">
               <View className="w-6 h-6 bg-indigo-100 rounded-full items-center justify-center mr-2">
                 <Text className="text-indigo-600 text-xs">🕒</Text>
@@ -214,7 +233,6 @@ export default function EmployeeListComp() {
               </View>
             </View>
 
-            {/* Department */}
             <View className="flex-row items-center">
               <View className="w-6 h-6 bg-purple-100 rounded-full items-center justify-center mr-2">
                 <Text className="text-purple-600 text-xs">🏢</Text>
@@ -226,8 +244,7 @@ export default function EmployeeListComp() {
               </View>
             </View>
 
-            {/* Weekly Off */}
-            <View className="flex-row items-center">
+            {/* <View className="flex-row items-center">
               <View className="w-6 h-6 bg-orange-100 rounded-full items-center justify-center mr-2">
                 <Text className="text-orange-600 text-xs">📅</Text>
               </View>
@@ -236,9 +253,8 @@ export default function EmployeeListComp() {
                   {shiftDetails.weeklyOff || 'Not specified'}
                 </Text>
               </View>
-            </View>
+            </View> */}
 
-            {/* Mobile (if available) */}
             {item.mobile && (
               <View className="flex-row items-center">
                 <View className="w-6 h-6 bg-green-100 rounded-full items-center justify-center mr-2">
@@ -254,28 +270,29 @@ export default function EmployeeListComp() {
           </View>
         </View>
 
-        {/* Bottom accent line */}
-        <View className={`h-1 ${shiftStatus.color.includes('green') ? 'bg-green-400' : shiftStatus.color.includes('blue') ? 'bg-blue-400' : 'bg-gray-400'}`} />
+        <View
+          className={`h-1 ${
+            shiftStatus.color.includes('green')
+              ? 'bg-green-400'
+              : shiftStatus.color.includes('blue')
+              ? 'bg-blue-400'
+              : 'bg-red-400'
+          }`}
+        />
       </TouchableOpacity>
     );
   };
 
   const renderHeader = () => (
-    <View className="px-4 pt-6 pb-4">
-      {/* Title Section */}
-      <View className="mb-6">
-        <Text className="text-3xl font-black text-gray-900 mb-2">
-          Employee Shifts
-        </Text>
+    <View className=" mx-auto  pt-3">
+      <View className="mb-4">
+        <Text className="text-3xl font-black text-gray-900 mb-2">Employee Shifts</Text>
         <Text className="text-base text-gray-600 leading-relaxed">
           Today's schedule overview for{' '}
-          <Text className="text-indigo-600 font-semibold">{today}</Text>
+          <Text className="text-indigo-600 font-bold ">{today}</Text>
         </Text>
       </View>
 
-
-
-      {/* Error Message */}
       {error && (
         <View className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4">
           <Text className="text-red-800 font-semibold mb-1">Error Loading Data</Text>
@@ -304,7 +321,7 @@ export default function EmployeeListComp() {
         {error ? 'Unable to load employees' : 'No employees found'}
       </Text>
       <Text className="text-gray-500 text-center leading-relaxed mb-6">
-        {error 
+        {error
           ? 'Please check your connection and try again.'
           : 'There are no employees scheduled for today. Pull down to refresh.'}
       </Text>
@@ -320,9 +337,7 @@ export default function EmployeeListComp() {
   );
 
   const renderFooter = () => {
-    if (error && employees.length === 0) {
-      return null;
-    }
+    if (error && employees.length === 0) return null;
 
     if (!hasMore) {
       return (
@@ -374,12 +389,14 @@ export default function EmployeeListComp() {
   }
 
   return (
-    <View className="flex-1 bg-gray-50">
+    <View className={`flex-1 bg-${APP_BACKGROUND_COLOR}-50`}>
       <StatusBar barStyle="dark-content" backgroundColor="#F9FAFB" />
-      
+
       <FlatList
         data={employees}
-        keyExtractor={(item) => item.uniqueId || item._id || item.id || Math.random().toString()}
+        keyExtractor={(item) =>
+          item.uniqueId || item._id || item.id || Math.random().toString()
+        }
         renderItem={renderEmployeeCard}
         numColumns={2}
         ListHeaderComponent={renderHeader}
