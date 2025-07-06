@@ -1,8 +1,19 @@
 import React, { useMemo } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View, StatusBar, Text, ActivityIndicator, StyleSheet } from "react-native";
-import { Feather, MaterialIcons, FontAwesome5, Entypo } from "@expo/vector-icons";
+import {
+  View,
+  StatusBar,
+  Text,
+  ActivityIndicator,
+  StyleSheet,
+} from "react-native";
+import {
+  Feather,
+  MaterialIcons,
+  FontAwesome5,
+  Entypo,
+} from "@expo/vector-icons";
 
 import SearchEmployeeAndList from "./searchEmployeeandList";
 import ShiftActivityLog from "./shiftActivityLog";
@@ -21,12 +32,7 @@ const PERMISSION_TO_SCREEN_MAP = {
     component: SearchEmployeeAndList,
     title: "Search",
     icon: (color, size) => <Feather name="search" size={size} color={color} />,
-  },
-  "create shift": {
-    routeName: "CreateShift",
-    component: CreateShift,
-    title: "Shift",
-    icon: (color, size) => <Entypo name="clock" size={size} color={color} />,
+    order: 1, // 👈 Add order
   },
   "shift activity log": {
     routeName: "ShiftActivityLog",
@@ -35,15 +41,25 @@ const PERMISSION_TO_SCREEN_MAP = {
     icon: (color, size) => (
       <MaterialIcons name="people-outline" size={size} color={color} />
     ),
+    order: 2, // 👈 Add order
   },
-  "roster dashboard": {
-    routeName: "RosterDashboard",
-    component: RosterDashboard,
-    title: "Dashboard",
-    icon: (color, size) => (
-      <FontAwesome5 name="chart-bar" size={size} color={color} />
-    ),
+  "create shift": {
+    routeName: "CreateShift",
+    component: CreateShift,
+    title: "Shift",
+    icon: (color, size) => <Entypo name="clock" size={size} color={color} />,
+    order: 3, // 👈 Add order
   },
+  // Uncomment if you want to add Dashboard later
+  // "roster dashboard": {
+  //   routeName: "RosterDashboard",
+  //   component: RosterDashboard,
+  //   title: "Dashboard",
+  //   icon: (color, size) => (
+  //     <FontAwesome5 name="chart-bar" size={size} color={color} />
+  //   ),
+  //   order: 4,
+  // },
 };
 
 const RosterTabLayout = () => {
@@ -71,6 +87,9 @@ const RosterTabLayout = () => {
     const filteredScreens = allowedModules
       .filter((name) => PERMISSION_TO_SCREEN_MAP[name])
       .map((name) => PERMISSION_TO_SCREEN_MAP[name]);
+
+    // 🔥 Sort tabs by their order property
+    filteredScreens.sort((a, b) => a.order - b.order);
 
     return filteredScreens;
   }, [permissions]);

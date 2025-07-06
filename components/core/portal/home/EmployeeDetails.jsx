@@ -40,13 +40,12 @@ const EmployeeDetails = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff7ed' }}>
       <ScrollView 
         style={{ flex: 1 }}
         contentContainerStyle={{ flexGrow: 1 }}
         showsVerticalScrollIndicator={false}
       >
-        <View style={{ padding: 16, gap: 16 }}>
+        <View style={{ padding: 16, gap: 2 }}>
           <EmployeeDataCard userData={userData} />
           {/* <MessagingCard /> */}
           {/* <QuickLinksCard employeeName={userData} /> */}
@@ -60,7 +59,7 @@ const EmployeeDetails = () => {
           />
         </View>
       </ScrollView>
-    </SafeAreaView>
+  
   );
 };
 

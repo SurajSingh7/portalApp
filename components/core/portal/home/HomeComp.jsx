@@ -40,7 +40,7 @@ const HomeComp = () => {
       {/* Tab Header - Fixed */}
       <View className="flex-row justify-around bg-orange-50 border-b border-orange-200">
         {tabList.map((tab) => (
-          <Pressable key={tab.id} onPress={() => setActiveTab(tab.id)} className="py-3 flex-1 items-center">
+          <Pressable key={tab.id} onPress={() => setActiveTab(tab.id)} className="py-2 flex-1 items-center">
             <Text className={`text-sm ${activeTab === tab.id ? "text-orange-500 font-bold" : "text-gray-600"}`}>
               {tab.label}
             </Text>

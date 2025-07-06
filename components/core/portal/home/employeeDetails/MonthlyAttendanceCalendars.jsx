@@ -11,7 +11,7 @@ const MonthlyAttendanceCalendar = ({ selectedEmployee, onScrollToBottom }) => {
   const [error, setError] = useState(null)
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [showAttendanceDetails, setShowAttendanceDetails] = useState(false)
+  const [showAttendanceDetails, setShowAttendanceDetails] = useState(true)
   const [attendanceDetails, setAttendanceDetails] = useState(null)
 
   const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -234,13 +234,13 @@ const MonthlyAttendanceCalendar = ({ selectedEmployee, onScrollToBottom }) => {
             <View className="bg-orange-400 px-3 py-2">
               <View className="flex-row items-center justify-between">
                 <Text className="text-white text-sm font-bold">Attendance Details</Text>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   className="bg-white/20 p-1 rounded-full"
                   onPress={handleCloseAttendanceDetails}
                   activeOpacity={0.7}
                 >
                   <Text className="text-white font-bold text-xs">✕</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
 
