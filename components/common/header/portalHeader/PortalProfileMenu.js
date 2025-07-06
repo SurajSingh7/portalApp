@@ -70,16 +70,16 @@ const PortalProfileMenu = ({ userData }) => {
       >
         <TouchableWithoutFeedback onPress={() => setDropdownVisible(false)}>
           <View className="flex-1 bg-transparent ">
-            <View className="absolute top-12 right-4 w-48 bg-white rounded-lg shadow-lg p-3 z-50 mt-2">
+            <View className="absolute top-12 right-4  bg-white border-2 rounded-lg shadow-lg p-1 border-red-700 z-50 mt-2">
               {/* <Text className="text-gray-700 font-medium mb-2">{userData?.email}</Text> */}
-              <TouchableOpacity onPress={() => router.push('/')} className="py-2">
+              {/* <TouchableOpacity onPress={() => router.push('/')} className="py-2">
                 <Text className="text-gray-800">Change Password</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => router.push('/employee/username-alias')} className="py-2">
                 <Text className="text-gray-800">Username Alias</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleLogout} className="py-2">
-                <Text className="text-red-500 font-semibold">Logout</Text>
+              </TouchableOpacity> */}
+              <TouchableOpacity onPress={handleLogout} className="px-2  flex justify-end items-end  ">
+                <Text className="text-red-500 text-lg font-bold ">Logout</Text>
               </TouchableOpacity>
             </View>
           </View>

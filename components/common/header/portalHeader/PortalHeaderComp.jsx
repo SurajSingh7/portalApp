@@ -2,6 +2,7 @@ import React from 'react';
 import { View, ActivityIndicator, Text } from 'react-native';
 import { usePermissions } from '../../../../context/PermissionContext';
 import PortalProfileMenu from './PortalProfileMenu';
+import MainMenuButton from './MainMenuButton';
 
 const PortalHeaderComp = () => {
   const { userData, loading } = usePermissions();
@@ -17,7 +18,8 @@ const PortalHeaderComp = () => {
   return (
     <View className="bg-[#0f172a] h-14 w-full flex-row justify-between items-center px-4">
       <Text className="text-white font-black text-base">NETRA</Text>
-      <PortalProfileMenu userData={userData} />
+       <MainMenuButton userData={userData} />
+       <PortalProfileMenu userData={userData} />
     </View>
   );
 };
