@@ -20,6 +20,8 @@ const ActivityLogs = () => {
     hasNext: false,
   })
 
+  
+
   // Fetch activity logs
   const fetchActivityLogs = async (page = 1, search = "", showLoading = true) => {
     if (showLoading) setLoading(true)

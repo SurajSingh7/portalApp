@@ -1,12 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
+import ThemColorsComp from "../../../common/theme/ThemColorsComp";
 
 const QuickLinks = () => {
   return (
     <View style={styles.container}>
+      <ThemColorsComp/>
       {/* Icon */}
-      <FontAwesome5 name="link" size={70} color="#38bdf8" />
+      <FontAwesome5 name="link" size={40} color="#38bdf8" />
 
       {/* Main Message */}
       <Text style={styles.title}>Quick Links Coming Soon</Text>

@@ -2,11 +2,11 @@ import React, { useMemo } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, StatusBar, Text, ActivityIndicator, StyleSheet } from "react-native";
-import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"; // ✅ Added MaterialCommunityIcons
 
 import PortalHome from "./portalHome";
 import PortalTeamReport from "./portalTeamReport";
-import PortalTheme from "./theme"; // 👈 Theme screen
+import CircularNews from "../../components/core/portal/home/CircularNews";
 import PortalHeaderComp from "../../components/common/header/portalHeader/PortalHeaderComp";
 import { usePermissions } from "../../context/PermissionContext";
 
@@ -14,12 +14,6 @@ const Tab = createBottomTabNavigator();
 
 // Map module names from backend to screens
 const PERMISSION_TO_SCREEN_MAP = {
-  // "employee dashboard": {
-  //   routeName: "PortalHome",
-  //   component: PortalHome,
-  //   title: "Home",
-  //   icon: (color, size) => <Feather name="home" size={size} color={color} />,
-  // },
   "team report": {
     routeName: "PortalTeamReport",
     component: PortalTeamReport,
@@ -30,25 +24,32 @@ const PERMISSION_TO_SCREEN_MAP = {
   },
 };
 
-// New Theme tab (always visible)
-const THEME_TAB = {
-  routeName: "PortalTheme",
-  component: PortalTheme,
-  title: "Theme",
-  icon: (color, size) => <Feather name="settings" size={size} color={color} />,
+// 🆕 Circular/News tab (always visible)
+const CIRCULAR_TAB = {
+  routeName: "CircularNews",
+  component: CircularNews,
+  title: "Circular/News",
+  icon: (color, size) => (
+    <MaterialCommunityIcons
+      name="newspaper-variant-outline" // ✅ Beautiful news icon
+      size={size}
+      color={color}
+    />
+  ),
 };
 
+// 🏠 Home tab (always visible)
 const PORTAL_HOME = {
-    routeName: "PortalHome",
-    component: PortalHome,
-    title: "Home",
-    icon: (color, size) => <Feather name="home" size={size} color={color} />,
+  routeName: "PortalHome",
+  component: PortalHome,
+  title: "Home",
+  icon: (color, size) => (
+    <Feather name="home" size={size} color={color} />
+  ),
 };
-
-
 
 const PortalTabLayout = () => {
-  const { userData, permissions, loading, error } = usePermissions(); // Get data from context
+  const { permissions, loading, error } = usePermissions();
 
   // Flatten all nested modules
   const flattenModules = (modules = []) => {
@@ -74,12 +75,16 @@ const PortalTabLayout = () => {
       .filter((name) => PERMISSION_TO_SCREEN_MAP[name])
       .map((name) => PERMISSION_TO_SCREEN_MAP[name]);
 
-    // Add Theme tab (always visible)
-    const finalScreens = [...filteredScreens,PORTAL_HOME,THEME_TAB];
+    // 🆕 Add Home & Circular tab (always visible)
+    const finalScreens = [
+      PORTAL_HOME,   // Home tab first
+      CIRCULAR_TAB,  // Circular tab second
+      ...filteredScreens,
+    ];
+
     return finalScreens;
   }, [permissions]);
 
-  // Show loading state
   if (loading) {
     return (
       <SafeAreaView style={styles.centered}>
@@ -89,7 +94,6 @@ const PortalTabLayout = () => {
     );
   }
 
-  // Show error state
   if (error) {
     return (
       <SafeAreaView style={styles.centered}>
@@ -98,7 +102,6 @@ const PortalTabLayout = () => {
     );
   }
 
-  // Show no permission state
   if (tabScreens.length === 0) {
     return (
       <SafeAreaView style={styles.centered}>
@@ -109,7 +112,6 @@ const PortalTabLayout = () => {
     );
   }
 
-  // Render tab navigator
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#fff" />
@@ -117,8 +119,8 @@ const PortalTabLayout = () => {
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: "#fb923c",
-          tabBarInactiveTintColor: "#999",
+          tabBarActiveTintColor: "#fb923c", // Active tab color
+          tabBarInactiveTintColor: "#999",  // Inactive tab color
           tabBarStyle: {
             height: 60,
             paddingBottom: 6,
@@ -126,6 +128,11 @@ const PortalTabLayout = () => {
             backgroundColor: "#fff",
             borderTopWidth: 1,
             borderTopColor: "#eee",
+            shadowColor: "#000",
+            shadowOpacity: 0.1,
+            shadowOffset: { width: 0, height: -2 },
+            shadowRadius: 4,
+            elevation: 5,
           },
           tabBarLabelStyle: {
             fontSize: 11,
