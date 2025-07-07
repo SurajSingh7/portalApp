@@ -6,7 +6,7 @@ import { Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-ico
 
 import PortalHome from "./portalHome";
 import PortalTeamReport from "./portalTeamReport";
-import CircularNews from "../../components/core/portal/home/CircularNews";
+import CircularNews from "./portalCircularNews"; 
 import PortalHeaderComp from "../../components/common/header/portalHeader/PortalHeaderComp";
 import { usePermissions } from "../../context/PermissionContext";
 

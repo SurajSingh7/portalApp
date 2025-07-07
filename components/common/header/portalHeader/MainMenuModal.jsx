@@ -19,7 +19,7 @@ const portalModules = {
   home: {
     name: "Home",
     icon: <Feather name="home" size={22} color="#fff" />, // smaller icon
-    route: "/portal/home",
+    route: "/(PortalTab)/portalHome",
   },
   "circular/news": {
     name: "Circular/News",
@@ -30,14 +30,14 @@ const portalModules = {
         color="#fff"
       />
     ),
-    route: "/portal/circularNews",
+    route: "/(PortalTab)/portalCircularNews",
   },
   "team report": {
     name: "Team Report",
     icon: (
       <MaterialIcons name="people-outline" size={22} color="#fff" />
     ),
-    route: "/portal/teamReport",
+    route: "/(PortalTab)/portalTeamReport",
   },
 };
 
@@ -45,17 +45,17 @@ const rosterModules = {
   "search employee": {
     name: "Search",
     icon: <Feather name="search" size={22} color="#fff" />,
-    route: "/roster/searchEmployeeandList",
+    route: "/(RosterTab)/searchEmployeeandList",
   },
   "shift activity log": {
     name: "Activity Log",
     icon: <MaterialIcons name="assignment" size={22} color="#fff" />,
-    route: "/roster/shiftActivityLog",
+    route: "/(RosterTab)/shiftActivityLog",
   },
   "create shift": {
     name: "Create Shift",
     icon: <Entypo name="clock" size={22} color="#fff" />,
-    route: "/roster/createShift",
+    route: "/(RosterTab)/createShift",
   },
 };
 

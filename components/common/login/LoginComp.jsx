@@ -48,7 +48,7 @@ export default function LoginComp() {
     const initialize = async () => {
       const token = await getToken();
       if (token) {
-        router.replace("/home");
+        router.replace("/(PortalTab)/portalHome");
       } else {
         const creds = await getCredentials();
         if (creds?.username && creds?.password) {
@@ -136,7 +136,7 @@ export default function LoginComp() {
           await clearCredentials();
         }
 
-        router.replace("/home");
+        router.replace("/(PortalTab)/portalHome");
       } else {
         setErrors({
           username: "",

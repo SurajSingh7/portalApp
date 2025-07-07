@@ -11,6 +11,7 @@ import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
 import { clearToken, getToken } from '../../../../utils/storage';
 import { API_BASE_URL } from '../../../../config/api';
+import Ionicons from '@expo/vector-icons/Ionicons'; // ✅ Import Ionicons
 
 const PortalProfileMenu = ({ userData }) => {
   const router = useRouter();
@@ -70,7 +71,7 @@ const PortalProfileMenu = ({ userData }) => {
       >
         <TouchableWithoutFeedback onPress={() => setDropdownVisible(false)}>
           <View className="flex-1 bg-transparent ">
-            <View className="absolute top-12 right-4  bg-white border-2 rounded-lg shadow-lg p-1 border-red-700 z-50 mt-2">
+            <View className="absolute top-12 right-4 bg-[#0f172a] border-2 border-white rounded-md shadow-lg p-1  z-50 mt-2">
               {/* <Text className="text-gray-700 font-medium mb-2">{userData?.email}</Text> */}
               {/* <TouchableOpacity onPress={() => router.push('/')} className="py-2">
                 <Text className="text-gray-800">Change Password</Text>
@@ -78,8 +79,9 @@ const PortalProfileMenu = ({ userData }) => {
               <TouchableOpacity onPress={() => router.push('/employee/username-alias')} className="py-2">
                 <Text className="text-gray-800">Username Alias</Text>
               </TouchableOpacity> */}
-              <TouchableOpacity onPress={handleLogout} className="px-2  flex justify-end items-end  ">
-                <Text className="text-red-500 text-lg font-bold ">Logout</Text>
+               <TouchableOpacity onPress={handleLogout} className="px-2 flex-row gap-2 items-end  ">
+                 <Ionicons name="log-out-outline" size={20} color="#fff" /> 
+                <Text className="text-white text-base font-bold ">Logout</Text>
               </TouchableOpacity>
             </View>
           </View>
