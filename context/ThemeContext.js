@@ -1,11 +1,10 @@
 import React, { createContext, useState, useEffect } from "react";
 import { getThemeColor, saveThemeColor } from "../utils/storage";
-import { APP_BG_COLOR } from "@env";
+import { APP_BACKGROUND_COLOR } from "../config/api";
 
 export const ThemeContext = createContext();
-
 export const ThemeProvider = ({ children }) => {
-  const [themeColor, setThemeColor] = useState(APP_BG_COLOR || "blue");
+  const [themeColor, setThemeColor] = useState(APP_BACKGROUND_COLOR || "blue");
 
   useEffect(() => {
     const loadColor = async () => {
@@ -21,8 +20,8 @@ export const ThemeProvider = ({ children }) => {
   };
 
   const resetTheme = async () => {
-    setThemeColor(APP_BG_COLOR || "orange");
-    await saveThemeColor(APP_BG_COLOR || "orange");
+    setThemeColor(APP_BACKGROUND_COLOR || "orange");
+    await saveThemeColor(APP_BACKGROUND_COLOR || "orange");
   };
 
   return (

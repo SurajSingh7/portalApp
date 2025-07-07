@@ -10,6 +10,9 @@ web-build/
 expo-env.d.ts
 .env
 /ztest
+android/
+
+
 
 # Native
 .kotlin/
