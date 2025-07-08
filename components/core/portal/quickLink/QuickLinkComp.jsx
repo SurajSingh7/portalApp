@@ -1,38 +1,37 @@
 
 import { View, Text, Pressable } from "react-native"
 import { useState, useCallback } from "react"
-import EmployeeDetails from "./EmployeeDetails"
-import CircularNews from "./CircularNews"
-import QuickLinks from "./QuickLinks"
 import { useFocusEffect } from "@react-navigation/native"
+import UserNameAlias from "../../../common/header/portalHeader/UsernameAlias"
+import ChangePasswordScreen from "../../../common/header/portalHeader/ChangePassword"
+import ThemColorsComp from "../../../common/theme/ThemColorsComp"
 
-const HomeComp = () => {
-  const [activeTab, setActiveTab] = useState("employee")
+const QuickLinkComp = () => {
+  const [activeTab, setActiveTab] = useState("alias")
 
   // Reset activeTab every time the screen comes into focus
   useFocusEffect(
     useCallback(() => {
-      setActiveTab("employee")
+      setActiveTab("alias")
     }, []),
   )
 
   const renderTab = () => {
     switch (activeTab) {
-      case "employee":
-        return <EmployeeDetails />
-      case "circular":
-        return <CircularNews />
-      case "links":
-        return <QuickLinks />
+      case "alias":
+        return <UserNameAlias/>
+      case "changePassword":
+        return <ChangePasswordScreen/>
+      case "theme":
+        return <ThemColorsComp/>
       default:
         return null
     }
   }
-
   const tabList = [
-    { id: "employee", label: "Employee Details" },
-    { id: "circular", label: "Circular/News" },
-    // { id: "links", label: "Quick Links" },
+    { id: "alias", label: "Username Alias" },
+    { id: "changePassword", label: "Change Password" },
+    { id: "theme", label: "Theme" },
   ]
 
   return (
@@ -55,4 +54,4 @@ const HomeComp = () => {
   )
 }
 
-export default HomeComp
+export default QuickLinkComp

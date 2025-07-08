@@ -21,16 +21,16 @@ const portalModules = {
     icon: <Feather name="home" size={22} color="#fff" />, // smaller icon
     route: "/(PortalTab)/portalHome",
   },
-  "circular/news": {
-    name: "Circular/News",
+  "Quick Links": {
+    name: "Quick Links",
     icon: (
       <MaterialCommunityIcons
-        name="newspaper-variant-outline"
+        name="link-variant-plus"
         size={22}
         color="#fff"
       />
     ),
-    route: "/(PortalTab)/portalCircularNews",
+    route: "/(PortalTab)/portalQuickLinks",
   },
   "team report": {
     name: "Team Report",
@@ -80,7 +80,7 @@ const MainMenuModal = ({ visible, onClose }) => {
 
     const alwaysVisible = [
       portalModules.home,
-      portalModules["circular/news"],
+      portalModules["Quick Links"],
     ];
 
     const permissionBasedPortal = Object.entries(portalModules)
@@ -92,7 +92,7 @@ const MainMenuModal = ({ visible, onClose }) => {
       ...permissionBasedPortal.filter(
         (feature) =>
           feature.route !== portalModules.home.route &&
-          feature.route !== portalModules["circular/news"].route
+          feature.route !== portalModules["Quick Links"].route
       ),
     ];
 

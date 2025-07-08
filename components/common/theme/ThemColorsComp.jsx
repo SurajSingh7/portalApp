@@ -40,7 +40,7 @@ const ThemColorsComp = () => {
       {/* 🎨 Title */}
       <Text className="text-xl font-bold text-gray-800 mb-2">Choose Your Theme</Text>
 
-      {/* 🟠 Company Colors (horizontal carousel) */}
+      {/* 🟠 Company Colors */}
       <Text className="text-lg font-semibold text-gray-700 mb-2">Primary Colors</Text>
       <ScrollView
         horizontal
@@ -64,17 +64,21 @@ const ThemColorsComp = () => {
         ))}
       </ScrollView>
 
-      {/* 🌈 Other Colors (grid view) */}
+      {/* 🌈 Other Colors */}
       <Text className="text-lg font-semibold text-gray-700 mb-2">Other Colors</Text>
       <ScrollView
-        contentContainerStyle={{ flexDirection: "row", flexWrap: "wrap", justifyContent: "center" }}
+        contentContainerStyle={{
+          flexDirection: "row",
+          flexWrap: "wrap",
+          justifyContent: "center",
+        }}
         className="max-h-72"
       >
         {otherColors.map((color) => (
           <View key={color} className="p-2">
             <TouchableOpacity
               onPress={() => changeTheme(color)}
-              className={`w-8 h-8 rounded-full border-2 justify-center items-center shadow-md ${
+              className={`w-12 h-12 rounded-full border-4 justify-center items-center shadow-md ${
                 currentColor === color
                   ? `border-${color}-800`
                   : "border-gray-300"
@@ -102,6 +106,11 @@ const ThemColorsComp = () => {
         <Text className={`text-${currentColor}-700 font-bold`}>
           {currentColor}
         </Text>
+      </Text>
+
+      {/* 🌟 Coming Soon */}
+      <Text className="mt-4 text-gray-500 italic text-center">
+        ✨ Theme customization is coming soon. Stay tuned for more colors and advanced options!
       </Text>
     </View>
   );

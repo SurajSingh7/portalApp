@@ -7,8 +7,11 @@ import { Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-ico
 import PortalHome from "./portalHome";
 import PortalTeamReport from "./portalTeamReport";
 import CircularNews from "./portalCircularNews"; 
+import PortalQuickLinks from "./portalQuickLinks";
+
 import PortalHeaderComp from "../../components/common/header/portalHeader/PortalHeaderComp";
 import { usePermissions } from "../../context/PermissionContext";
+import UserNameAlias from "../../components/common/header/portalHeader/UsernameAlias";
 
 const Tab = createBottomTabNavigator();
 
@@ -24,14 +27,14 @@ const PERMISSION_TO_SCREEN_MAP = {
   },
 };
 
-// 🆕 Circular/News tab (always visible)
-const CIRCULAR_TAB = {
-  routeName: "CircularNews",
-  component: CircularNews,
-  title: "Circular/News",
+
+const QuickLinks_TAB = {
+  routeName: "PortalQuickLinks",
+  component: PortalQuickLinks,
+  title: "Quick Links",
   icon: (color, size) => (
     <MaterialCommunityIcons
-      name="newspaper-variant-outline" // ✅ Beautiful news icon
+      name="link-variant-plus" // ✅ Beautiful news icon
       size={size}
       color={color}
     />
@@ -78,7 +81,7 @@ const PortalTabLayout = () => {
     // 🆕 Add Home & Circular tab (always visible)
     const finalScreens = [
       PORTAL_HOME,   // Home tab first
-      CIRCULAR_TAB,  // Circular tab second
+      QuickLinks_TAB, // Circular tab second
       ...filteredScreens,
     ];
 
