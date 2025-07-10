@@ -13,20 +13,24 @@ export const PermissionProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const router = useRouter();
 
-  const fetchAuthData = async () => {
+  const fetchAuthData = async (initialToken = null) => {
     setLoading(true);
-    try {
-      const token = await getToken();
-      if (!token) {
-        throw new Error('No token');
+      try {
+      // Use initialToken if provided, otherwise try to get from storage
+      const token = initialToken || (await getToken())
+      // console.log("Token fetched:", token);
+
+      if (token !== null && token === '') {
+        console.log("Token is empty, clearing token");
+        throw new Error("No token2")
       }
 
       const res = await fetch(`${API_BASE_URL}/hrms/authdata`, {
         headers: {
-          Authorization: `Bearer ${token}`,
-          'User-Agent': 'reactnative',
+          Authorization: `Bearer ${token}`, 
+          "User-Agent": "reactnative",
         },
-      });
+      })
 
       if (res.status === 401) {
         await clearToken();

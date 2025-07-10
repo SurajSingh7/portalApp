@@ -64,7 +64,7 @@ const UserNameAlias = () => {
       if (res.ok) {
         setCurrentAlias(data.data.usernameAlias || "")
       } else {
-        console.error("Fetch failed:", data.message)
+        console.log("Fetch failed:", data.message)
       }
     } catch (err) {
       console.error("Error fetching alias:", err)

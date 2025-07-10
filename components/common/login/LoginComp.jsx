@@ -6,15 +6,18 @@ import {
   TextInput,
   TouchableOpacity,
   ActivityIndicator,
-  KeyboardAvoidingView,
   Platform,
   Animated,
   Dimensions,
   StatusBar,
   Image,
   Easing,
+  SafeAreaView,
 } from "react-native"
+import { useFocusEffect } from "@react-navigation/native"
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view"
 import { useRouter } from "expo-router"
+import { useCallback } from "react"
 import { Feather } from "@expo/vector-icons"
 import { API_BASE_URL } from "../../../config/api"
 import { setToken, getToken, saveCredentials, getCredentials, clearCredentials } from "../../../utils/storage"
@@ -37,11 +40,23 @@ export default function LoginComp() {
   const [versionAnim] = useState(new Animated.Value(0))
   const [pulseAnim] = useState(new Animated.Value(1))
   const [shimmerAnim] = useState(new Animated.Value(0))
-  const [glowAnim] = useState(new Animated.Value(0))
   const rotateAnim = useState(new Animated.Value(0))[0]
 
   const router = useRouter()
   const { fetchAuthData } = usePermissions()
+
+  // Force status bar configuration
+  useFocusEffect(
+    useCallback(() => {
+      if (Platform.OS === 'android') {
+        StatusBar.setBackgroundColor('#FFFFFF', true)
+        StatusBar.setBarStyle('dark-content', true)
+        StatusBar.setTranslucent(false)
+      } else {
+        StatusBar.setBarStyle('dark-content', true)
+      }
+    }, [])
+  )
 
   useEffect(() => {
     const initialize = async () => {
@@ -119,24 +134,6 @@ export default function LoginComp() {
             useNativeDriver: true,
           }),
         ).start()
-
-        // Glow effect
-        Animated.loop(
-          Animated.sequence([
-            Animated.timing(glowAnim, {
-              toValue: 1,
-              duration: 2500,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-            Animated.timing(glowAnim, {
-              toValue: 0,
-              duration: 2500,
-              easing: Easing.inOut(Easing.ease),
-              useNativeDriver: true,
-            }),
-          ]),
-        ).start()
       }
     }
     initialize()
@@ -211,26 +208,43 @@ export default function LoginComp() {
 
   if (checking) {
     return (
-      <View className="flex-1 justify-center items-center bg-black">
-        <View
-          className="bg-gray-900 p-8 rounded-3xl border border-gray-800"
-          style={{
-            shadowColor: "#00D4FF",
-            shadowOffset: { width: 0, height: 8 },
-            shadowOpacity: 0.3,
-            shadowRadius: 20,
-            elevation: 20,
-          }}
-        >
-          <ActivityIndicator size="large" color="#00D4FF" />
-          <Text className="text-gray-100 mt-4 text-lg font-semibold text-center">Initializing...</Text>
-        </View>
-      </View>
+      <>
+        <StatusBar 
+          barStyle="dark-content" 
+          backgroundColor="#FFFFFF"
+          translucent={false}
+        />
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+          <View 
+            style={{ 
+              flex: 1, 
+              backgroundColor: "#FFFFFF",
+              paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 
+            }}
+          >
+            <View className="flex-1 justify-center items-center" style={{ backgroundColor: "#FFF7ED" }}>
+              <View
+                className="bg-white p-8 rounded-3xl shadow-2xl border border-orange-100"
+                style={{
+                  shadowColor: "#FB923C",
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 20,
+                  elevation: 20,
+                }}
+              >
+                <ActivityIndicator size="large" color="#FB923C" />
+                <Text className="text-orange-600 mt-4 text-lg font-semibold text-center">Initializing...</Text>
+              </View>
+            </View>
+          </View>
+        </SafeAreaView>
+      </>
     )
   }
 
   const orbitData = [
-    { label: "HRMS", icon: "users", color: "#00D4FF", angle: 0 },
+    { label: "HRMS", icon: "users", color: "#FB923C", angle: 0 },
     { label: "Stock", icon: "package", color: "#10B981", angle: 60 },
     { label: "Sales", icon: "trending-up", color: "#F59E0B", angle: 120 },
     { label: "NOC", icon: "shield", color: "#EF4444", angle: 180 },
@@ -238,442 +252,424 @@ export default function LoginComp() {
     { label: "Network", icon: "wifi", color: "#06B6D4", angle: 300 },
   ]
 
-  const orbitRadius = 80
+  const orbitRadius = 90
 
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor="#000000" />
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1">
-        <View className="flex-1 bg-black">
-          {/* Animated Background Elements */}
-          <Animated.View
-            className="absolute top-10 right-10 w-20 h-20 rounded-full opacity-20"
-            style={{
-              backgroundColor: "#00D4FF",
-              transform: [
-                {
-                  scale: shimmerAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: [1, 1.3, 1],
-                  }),
-                },
-              ],
-              opacity: shimmerAnim.interpolate({
-                inputRange: [0, 0.5, 1],
-                outputRange: [0.1, 0.3, 0.1],
-              }),
+      <StatusBar 
+        barStyle="dark-content" 
+        backgroundColor="#FFFFFF"
+        translucent={false}
+      />
+      <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFFFF" }}>
+        <View 
+          style={{ 
+            flex: 1, 
+            backgroundColor: "#FFFFFF",
+            paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 
+          }}
+        >
+          <KeyboardAwareScrollView
+            style={{ flex: 1, backgroundColor: "#FFF7ED" }}
+            contentContainerStyle={{ 
+              flexGrow: 1, 
+              justifyContent: "space-between", 
+              paddingBottom: Platform.OS === "ios" ? 20 : 0 
             }}
-          />
-          <Animated.View
-            className="absolute bottom-32 left-8 w-16 h-16 rounded-full opacity-15"
-            style={{
-              backgroundColor: "#8B5CF6",
-              transform: [
-                {
-                  scale: shimmerAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: [1.2, 1, 1.2],
-                  }),
-                },
-              ],
-            }}
-          />
-          <Animated.View
-            className="absolute top-1/3 left-1/4 w-12 h-12 rounded-full opacity-10"
-            style={{
-              backgroundColor: "#10B981",
-              transform: [
-                {
-                  scale: glowAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [0.8, 1.4],
-                  }),
-                },
-              ],
-            }}
-          />
-
-          {/* Subtle grid pattern overlay */}
-          <View
-            className="absolute inset-0 opacity-5"
-            style={{
-              backgroundImage: `linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
-                               linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)`,
-              backgroundSize: "20px 20px",
-            }}
-          />
-
-          <Animated.View
-            className="flex-1 justify-between px-6 py-8"
-            style={{
-              opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
-            }}
+            enableOnAndroid={true}
+            extraScrollHeight={Platform.OS === "ios" ? 0 : 20}
+            enableAutomaticScroll={true}
           >
-            {/* Top Section - Logo with Orbit */}
-            <View className="flex-1 justify-center items-center">
-              <View
+        {/* Background Gradient Overlay */}
+        <View
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(135deg, #FFF7ED 0%, #FFEDD5 50%, #FED7AA 100%)",
+          }}
+        />
+
+        {/* Animated Background Elements */}
+        <Animated.View
+          className="absolute top-10 right-10 w-20 h-20 rounded-full bg-orange-200 opacity-30"
+          style={{
+            transform: [
+              {
+                scale: shimmerAnim.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [1, 1.2, 1],
+                }),
+              },
+            ],
+          }}
+        />
+        <Animated.View
+          className="absolute bottom-32 left-8 w-16 h-16 rounded-full bg-orange-300 opacity-20"
+          style={{
+            transform: [
+              {
+                scale: shimmerAnim.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: [1.2, 1, 1.2],
+                }),
+              },
+            ],
+          }}
+        />
+
+        <Animated.View
+          className="flex-1 justify-between px-6 py-8"
+          style={{
+            opacity: fadeAnim,
+            transform: [{ translateY: slideAnim }, { scale: scaleAnim }],
+          }}
+        >
+          {/* Top Section - Logo with Orbit */}
+          <View className="flex-1 justify-center items-center">
+            <View
+              style={{
+                position: "relative",
+                width: 200,
+                height: 200,
+                marginBottom: 80,
+              }}
+            >
+              {/* Enhanced Connection Lines with Glow */}
+              {orbitData.map((item, index) => {
+                const angle = item.angle * (Math.PI / 180)
+                const x = orbitRadius * Math.cos(angle)
+                const y = orbitRadius * Math.sin(angle)
+                return (
+                  <View key={`line-${index}`}>
+                    {/* Glowing line to center */}
+                    <View
+                      style={{
+                        position: "absolute",
+                        left: 100,
+                        top: 100,
+                        width: Math.sqrt(x * x + y * y),
+                        height: 3,
+                        backgroundColor: "#FB923C",
+                        opacity: 0.3,
+                        transformOrigin: "0 50%",
+                        transform: [{ rotate: `${item.angle}deg` }],
+                        shadowColor: "#FB923C",
+                        shadowOffset: { width: 0, height: 0 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 4,
+                      }}
+                    />
+                    {/* Connection lines between adjacent nodes */}
+                    {index < orbitData.length - 1 && (
+                      <View
+                        style={{
+                          position: "absolute",
+                          left: 100 + x,
+                          top: 100 + y,
+                          width: 50,
+                          height: 2,
+                          backgroundColor: "#FDBA74",
+                          opacity: 0.4,
+                          transformOrigin: "0 50%",
+                          transform: [{ rotate: `${item.angle + 60}deg` }],
+                        }}
+                      />
+                    )}
+                  </View>
+                )
+              })}
+
+              {/* Orbiting Service Icons with Enhanced Styling */}
+              <Animated.View
                 style={{
-                  position: "relative",
-                  width: 200,
-                  height: 200,
-                  marginBottom: 20,
+                  position: "absolute",
+                  width: "100%",
+                  height: "100%",
+                  transform: [
+                    {
+                      rotate: rotateAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ["0deg", "360deg"],
+                      }),
+                    },
+                  ],
                 }}
               >
-                {/* Enhanced Connection Lines with Neon Glow */}
                 {orbitData.map((item, index) => {
                   const angle = item.angle * (Math.PI / 180)
                   const x = orbitRadius * Math.cos(angle)
                   const y = orbitRadius * Math.sin(angle)
                   return (
-                    <View key={`line-${index}`}>
-                      {/* Neon glowing line to center */}
-                      <Animated.View
+                    <Animated.View
+                      key={index}
+                      style={{
+                        position: "absolute",
+                        left: 100 + x - 25,
+                        top: 100 + y - 25,
+                        width: 50,
+                        height: 50,
+                        backgroundColor: item.color,
+                        borderRadius: 25,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        shadowColor: item.color,
+                        shadowOffset: { width: 0, height: 6 },
+                        shadowOpacity: 0.4,
+                        shadowRadius: 12,
+                        elevation: 12,
+                        borderWidth: 2,
+                        borderColor: "rgba(255, 255, 255, 0.3)",
+                        transform: [
+                          {
+                            rotate: rotateAnim.interpolate({
+                              inputRange: [0, 1],
+                              outputRange: ["0deg", "-360deg"],
+                            }),
+                          },
+                        ],
+                      }}
+                    >
+                      <Feather name={item.icon} size={16} color="#fff" />
+                      <Text
                         style={{
-                          position: "absolute",
-                          left: 100,
-                          top: 100,
-                          width: Math.sqrt(x * x + y * y),
-                          height: 2,
-                          backgroundColor: item.color,
-                          transformOrigin: "0 50%",
-                          transform: [{ rotate: `${item.angle}deg` }],
-                          shadowColor: item.color,
-                          shadowOffset: { width: 0, height: 0 },
-                          shadowOpacity: 0.8,
-                          shadowRadius: 6,
-                          opacity: glowAnim.interpolate({
-                            inputRange: [0, 1],
-                            outputRange: [0.3, 0.7],
-                          }),
-                        }}
-                      />
-                      {/* Connection lines between adjacent nodes */}
-                      {index < orbitData.length - 1 && (
-                        <View
-                          style={{
-                            position: "absolute",
-                            left: 100 + x,
-                            top: 100 + y,
-                            width: 50,
-                            height: 1,
-                            backgroundColor: "#333333",
-                            opacity: 0.4,
-                            transformOrigin: "0 50%",
-                            transform: [{ rotate: `${item.angle + 60}deg` }],
-                          }}
-                        />
-                      )}
-                    </View>
-                  )
-                })}
-
-                {/* Orbiting Service Icons with Neon Effects */}
-                <Animated.View
-                  style={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    transform: [
-                      {
-                        rotate: rotateAnim.interpolate({
-                          inputRange: [0, 1],
-                          outputRange: ["0deg", "360deg"],
-                        }),
-                      },
-                    ],
-                  }}
-                >
-                  {orbitData.map((item, index) => {
-                    const angle = item.angle * (Math.PI / 180)
-                    const x = orbitRadius * Math.cos(angle)
-                    const y = orbitRadius * Math.sin(angle)
-                    return (
-                      <Animated.View
-                        key={index}
-                        style={{
-                          position: "absolute",
-                          left: 100 + x - 25,
-                          top: 100 + y - 25,
-                          width: 50,
-                          height: 50,
-                          backgroundColor: item.color,
-                          borderRadius: 25,
-                          alignItems: "center",
-                          justifyContent: "center",
-                          shadowColor: item.color,
-                          shadowOffset: { width: 0, height: 0 },
-                          shadowOpacity: 0.6,
-                          shadowRadius: 15,
-                          elevation: 15,
-                          borderWidth: 2,
-                          borderColor: "rgba(255, 255, 255, 0.1)",
-                          transform: [
-                            {
-                              rotate: rotateAnim.interpolate({
-                                inputRange: [0, 1],
-                                outputRange: ["0deg", "-360deg"],
-                              }),
-                            },
-                          ],
+                          color: "#fff",
+                          fontSize: 8,
+                          fontWeight: "700",
+                          marginTop: 2,
+                          textAlign: "center",
+                          textShadowColor: "rgba(0, 0, 0, 0.3)",
+                          textShadowOffset: { width: 0, height: 1 },
+                          textShadowRadius: 2,
                         }}
                       >
-                        <Feather name={item.icon} size={16} color="#fff" />
-                        <Text
-                          style={{
-                            color: "#fff",
-                            fontSize: 8,
-                            fontWeight: "700",
-                            marginTop: 2,
-                            textAlign: "center",
-                            textShadowColor: "rgba(0, 0, 0, 0.8)",
-                            textShadowOffset: { width: 0, height: 1 },
-                            textShadowRadius: 3,
-                          }}
-                        >
-                          {item.label}
-                        </Text>
-                      </Animated.View>
-                    )
-                  })}
-                </Animated.View>
+                        {item.label}
+                      </Text>
+                    </Animated.View>
+                  )
+                })}
+              </Animated.View>
 
-                {/* Enhanced Central Logo with Neon Ring */}
-                <Animated.View
-                  style={{
-                    position: "absolute",
-                    left: 50,
-                    top: 50,
-                    width: 100,
-                    height: 100,
-                    borderRadius: 50,
-                    backgroundColor: "#1A1A1A",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    shadowColor: "#00D4FF",
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 0.6,
-                    shadowRadius: 25,
-                    elevation: 25,
-                    borderWidth: 3,
-                    borderColor: "#00D4FF",
-                    transform: [{ scale: pulseAnim }],
-                  }}
-                >
-                  {/* Animated neon ring */}
-                  <Animated.View
-                    style={{
-                      position: "absolute",
-                      width: 110,
-                      height: 110,
-                      borderRadius: 55,
-                      borderWidth: 2,
-                      borderColor: "#00D4FF",
-                      opacity: glowAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [0.3, 0.8],
-                      }),
-                    }}
-                  />
-                  {/* Inner glow ring */}
-                  <View
-                    style={{
-                      position: "absolute",
-                      width: 92,
-                      height: 92,
-                      borderRadius: 46,
-                      borderWidth: 1,
-                      borderColor: "rgba(0, 212, 255, 0.3)",
-                    }}
-                  />
-                  <Image source={logo} style={{ width: 80, height: 80 }} resizeMode="contain" />
-                </Animated.View>
-              </View>
-
-              <Text className="text-gray-100 text-lg text-center mt-4 font-medium">
-                Access your enterprise dashboard
-              </Text>
-              <Text className="text-gray-400 text-sm text-center mt-1 opacity-80">Secure • Reliable • Efficient</Text>
-            </View>
-
-            {/* Enhanced Login Form with Dark Theme */}
-            <View
-              className="bg-gray-900 rounded-3xl p-6 border border-gray-800"
-              style={{
-                shadowColor: "#00D4FF",
-                shadowOffset: { width: 0, height: 12 },
-                shadowOpacity: 0.2,
-                shadowRadius: 24,
-                elevation: 24,
-              }}
-            >
-              {/* Header with enhanced styling */}
-              <View className="items-center mb-6">
-                <View
-                  className="bg-gray-800 p-4 rounded-full mb-4 border border-gray-700"
-                  style={{
-                    shadowColor: "#00D4FF",
-                    shadowOffset: { width: 0, height: 0 },
-                    shadowOpacity: 0.3,
-                    shadowRadius: 10,
-                    elevation: 8,
-                  }}
-                >
-                  <Feather name="log-in" size={24} color="#00D4FF" />
-                </View>
-                <Text className="text-gray-300 text-base font-medium">Enter your credentials to continue</Text>
-              </View>
-
-              {/* Enhanced Username Field */}
-              <View className="mb-4">
-                <View className="relative">
-                  <View className="absolute left-4 top-4 z-10">
-                    <Feather name="user" size={18} color="#00D4FF" />
-                  </View>
-                  <TextInput
-                    className={`border bg-gray-800 p-4 pl-12 rounded-xl text-gray-100 placeholder-gray-500 text-base font-medium ${
-                      errors.username ? "border-red-400" : "border-gray-700"
-                    }`}
-                    placeholder="Username"
-                    placeholderTextColor="#6B7280"
-                    value={username}
-                    onChangeText={(text) => {
-                      setUsername(text)
-                      if (errors.username) setErrors({ ...errors, username: "" })
-                    }}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={{
-                      shadowColor: errors.username ? "#EF4444" : "#00D4FF",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.1,
-                      shadowRadius: 4,
-                      elevation: 2,
-                    }}
-                  />
-                </View>
-                {errors.username && (
-                  <Text className="text-red-400 text-sm mt-2 ml-1 font-medium">{errors.username}</Text>
-                )}
-              </View>
-
-              {/* Enhanced Password Field */}
-              <View className="mb-6">
-                <View className="relative">
-                  <View className="absolute left-4 top-4 z-10">
-                    <Feather name="lock" size={18} color="#00D4FF" />
-                  </View>
-                  <TextInput
-                    className={`border bg-gray-800 p-4 pl-12 pr-12 rounded-xl text-gray-100 placeholder-gray-500 text-base font-medium ${
-                      errors.password ? "border-red-400" : "border-gray-700"
-                    }`}
-                    placeholder="Password"
-                    placeholderTextColor="#6B7280"
-                    secureTextEntry={!showPassword}
-                    value={password}
-                    onChangeText={(text) => {
-                      setPassword(text)
-                      if (errors.password) setErrors({ ...errors, password: "" })
-                    }}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={{
-                      shadowColor: errors.password ? "#EF4444" : "#00D4FF",
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.1,
-                      shadowRadius: 4,
-                      elevation: 2,
-                    }}
-                  />
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-4"
-                    activeOpacity={0.7}
-                  >
-                    <Feather name={showPassword ? "eye-off" : "eye"} size={18} color="#00D4FF" />
-                  </TouchableOpacity>
-                </View>
-                {errors.password && (
-                  <Text className="text-red-400 text-sm mt-2 ml-1 font-medium">{errors.password}</Text>
-                )}
-              </View>
-
-              {/* Enhanced Remember Me + Forgot Password */}
-              <View className="flex-row justify-between items-center mb-6">
-                <TouchableOpacity
-                  onPress={() => setRememberMe(!rememberMe)}
-                  className="flex-row items-center"
-                  activeOpacity={0.7}
-                >
-                  <View
-                    className={`w-5 h-5 mr-3 rounded border-2 items-center justify-center ${
-                      rememberMe ? "bg-blue-500 border-blue-500" : "border-gray-600 bg-gray-800"
-                    }`}
-                    style={{
-                      shadowColor: rememberMe ? "#00D4FF" : "transparent",
-                      shadowOffset: { width: 0, height: 0 },
-                      shadowOpacity: 0.4,
-                      shadowRadius: 6,
-                      elevation: rememberMe ? 4 : 0,
-                    }}
-                  >
-                    {rememberMe && <Feather name="check" size={12} color="#fff" />}
-                  </View>
-                  <Text className="text-gray-300 text-sm font-medium">Remember me</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => router.push("/forgot-password")} activeOpacity={0.7}>
-                  <Text className="text-blue-400 text-sm font-semibold">Forgot Password?</Text>
-                </TouchableOpacity>
-              </View>
-
-              {/* Enhanced Login Button with Neon Effect */}
-              <TouchableOpacity
-                className={`bg-blue-600 p-4 rounded-xl ${loading ? "opacity-80" : ""}`}
-                onPress={handleLogin}
-                disabled={loading}
-                activeOpacity={0.8}
+              {/* Enhanced Central Logo */}
+              <Animated.View
                 style={{
-                  backgroundColor: "#00D4FF",
-                  shadowColor: "#00D4FF",
-                  shadowOffset: { width: 0, height: 0 },
-                  shadowOpacity: 0.5,
-                  shadowRadius: 15,
-                  elevation: 15,
+                  position: "absolute",
+                  left: 50,
+                  top: 50,
+                  width: 100,
+                  height: 100,
+                  borderRadius: 50,
+                  backgroundColor: "#1F2937",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  shadowColor: "#FB923C",
+                  shadowOffset: { width: 0, height: 12 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 20,
+                  elevation: 20,
+                  borderWidth: 4,
+                  borderColor: "#FB923C",
+                  transform: [{ scale: pulseAnim }],
                 }}
               >
-                {loading ? (
-                  <View className="flex-row items-center justify-center">
-                    <ActivityIndicator color="#000" size="small" />
-                    <Text className="text-black ml-3 font-bold text-base">Signing in...</Text>
-                  </View>
-                ) : (
-                  <Text className="text-black text-center font-bold text-base tracking-wide">Sign In</Text>
-                )}
-              </TouchableOpacity>
+                {/* Inner glow ring */}
+                <View
+                  style={{
+                    position: "absolute",
+                    width: 92,
+                    height: 92,
+                    borderRadius: 46,
+                    borderWidth: 2,
+                    borderColor: "rgba(251, 146, 60, 0.3)",
+                  }}
+                />
+                <Image source={logo} style={{ width: 80, height: 80 }} resizeMode="contain" />
+              </Animated.View>
             </View>
 
-            {/* Enhanced Version Info */}
-            <Animated.View
-              style={{
-                opacity: versionAnim,
-                transform: [
-                  {
-                    translateY: versionAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [20, 0],
-                    }),
-                  },
-                ],
-              }}
-              className="items-center mt-4"
-            >
-              <View className="bg-gray-900 px-4 py-2 rounded-full border border-gray-800">
-                <Text className="text-gray-400 text-xs font-semibold">Version 1.0</Text>
+            <Text className="text-orange-700 text-lg text-center -mt-16 font-medium">
+              Access your enterprise dashboard
+            </Text>
+            <Text className="text-orange-500 text-sm text-center mt-1 opacity-80">Secure • Reliable • Efficient</Text>
+          </View>
+
+          {/* Enhanced Login Form */}
+          <View
+            className="bg-white rounded-3xl p-6 border border-orange-100"
+            style={{
+              shadowColor: "#FB923C",
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.15,
+              shadowRadius: 24,
+              elevation: 24,
+            }}
+          >
+            {/* Header with enhanced styling */}
+            <View className="items-center mb-6 ">
+              <View
+                className="bg-orange-50 p-2 rounded-full mt-2 border border-orange-100"
+                style={{
+                  shadowColor: "#FB923C",
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 8,
+                  elevation: 4,
+                }}
+              >
+                <Feather  name="log-in" size={24} color="#FB923C" />
               </View>
-            </Animated.View>
+              <Text className="text-orange-600 text-base font-medium">Enter your credentials to continue</Text>
+            </View>
+
+            {/* Enhanced Username Field */}
+            <View className="mb-4">
+              <View className="relative">
+                <View className="absolute left-4 top-4 z-10">
+                  <Feather name="user" size={18} color="#FB923C" />
+                </View>
+                <TextInput
+                  className={`border bg-orange-50 p-4 pl-12 rounded-xl text-gray-900 placeholder-orange-400 text-base font-medium ${
+                    errors.username ? "border-red-400" : "border-orange-200"
+                  }`}
+                  placeholder="Username"
+                  placeholderTextColor="#FB923C"
+                  value={username}
+                  onChangeText={(text) => {
+                    setUsername(text)
+                    if (errors.username) setErrors({ ...errors, username: "" })
+                  }}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={{
+                    shadowColor: errors.username ? "#EF4444" : "#FB923C",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 4,
+                    elevation: 2,
+                  }}
+                />
+              </View>
+              {errors.username && (
+                <Text className="text-red-500 text-sm mt-2 ml-1 font-medium">{errors.username}</Text>
+              )}
+            </View>
+
+            {/* Enhanced Password Field */}
+            <View className="mb-6">
+              <View className="relative">
+                <View className="absolute left-4 top-4 z-10">
+                  <Feather name="lock" size={18} color="#FB923C" />
+                </View>
+                <TextInput
+                  className={`border bg-orange-50 p-4 pl-12 pr-12 rounded-xl text-gray-900 placeholder-orange-400 text-base font-medium ${
+                    errors.password ? "border-red-400" : "border-orange-200"
+                  }`}
+                  placeholder="Password"
+                  placeholderTextColor="#FB923C"
+                  secureTextEntry={!showPassword}
+                  value={password}
+                  onChangeText={(text) => {
+                    setPassword(text)
+                    if (errors.password) setErrors({ ...errors, password: "" })
+                  }}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  style={{
+                    shadowColor: errors.password ? "#EF4444" : "#FB923C",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 4,
+                    elevation: 2,
+                  }}
+                />
+                <TouchableOpacity
+                  onPress={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-4"
+                  activeOpacity={0.7}
+                >
+                  <Feather name={showPassword ? "eye-off" : "eye"} size={18} color="#FB923C" />
+                </TouchableOpacity>
+              </View>
+              {errors.password && (
+                <Text className="text-red-500 text-sm mt-2 ml-1 font-medium">{errors.password}</Text>
+              )}
+            </View>
+
+            {/* Enhanced Remember Me + Forgot Password */}
+            <View className="flex-row justify-between items-center mb-6">
+              <TouchableOpacity
+                onPress={() => setRememberMe(!rememberMe)}
+                className="flex-row items-center"
+                activeOpacity={0.7}
+              >
+                <View
+                  className={`w-5 h-5 mr-3 rounded border-2 items-center justify-center ${
+                    rememberMe ? "bg-orange-500 border-orange-500" : "border-orange-300 bg-white"
+                  }`}
+                  style={{
+                    shadowColor: rememberMe ? "#FB923C" : "transparent",
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.2,
+                    shadowRadius: 4,
+                    elevation: rememberMe ? 2 : 0,
+                  }}
+                >
+                  {rememberMe && <Feather name="check" size={12} color="#fff" />}
+                </View>
+                <Text className="text-orange-700 text-sm font-medium">Remember me</Text>
+              </TouchableOpacity>
+              {/* <TouchableOpacity onPress={() => router.push("/forgot-password")} activeOpacity={0.7}>
+                <Text className="text-orange-600 text-sm font-semibold">Forgot Password?</Text>
+              </TouchableOpacity> */}
+            </View>
+
+            {/* Enhanced Login Button */}
+            <TouchableOpacity
+              className={`bg-orange-500 p-4 rounded-xl ${loading ? "opacity-80" : ""}`}
+              onPress={handleLogin}
+              disabled={loading}
+              activeOpacity={0.8}
+              style={{
+                shadowColor: "#FB923C",
+                shadowOffset: { width: 0, height: 6 },
+                shadowOpacity: 0.4,
+                shadowRadius: 12,
+                elevation: 12,
+                background: "linear-gradient(135deg, #FB923C 0%, #F97316 100%)",
+              }}
+            >
+              {loading ? (
+                <View className="flex-row items-center justify-center">
+                  <ActivityIndicator color="#fff" size="small" />
+                  <Text className="text-white ml-3 font-bold text-base">Signing in...</Text>
+                </View>
+              ) : (
+                <Text className="text-white text-center font-bold text-base tracking-wide">Sign In</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+
+          {/* Enhanced Version Info */}
+          <Animated.View
+            style={{
+              opacity: versionAnim,
+              transform: [
+                {
+                  translateY: versionAnim.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [20, 0],
+                  }),
+                },
+              ],
+            }}
+            className="items-center mt-4"
+          >
+            <View className="bg-white px-3 py-2 rounded-full border border-orange-100">
+              <Text className="text-orange-600 text-xs font-semibold">Version 1.0</Text>
+            </View>
           </Animated.View>
+        </Animated.View>
+          </KeyboardAwareScrollView>
         </View>
-      </KeyboardAvoidingView>
+      </SafeAreaView>
     </>
   )
 }

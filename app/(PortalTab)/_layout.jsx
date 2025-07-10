@@ -2,16 +2,14 @@ import React, { useMemo } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View, StatusBar, Text, ActivityIndicator, StyleSheet } from "react-native";
-import { Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"; // ✅ Added MaterialCommunityIcons
+import { Feather, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons"; 
 
 import PortalHome from "./portalHome";
 import PortalTeamReport from "./portalTeamReport";
-import CircularNews from "./portalCircularNews"; 
 import PortalQuickLinks from "./portalQuickLinks";
 
 import PortalHeaderComp from "../../components/common/header/portalHeader/PortalHeaderComp";
 import { usePermissions } from "../../context/PermissionContext";
-import UserNameAlias from "../../components/common/header/portalHeader/UsernameAlias";
 
 const Tab = createBottomTabNavigator();
 
@@ -125,17 +123,17 @@ const PortalTabLayout = () => {
           tabBarActiveTintColor: "#fb923c", // Active tab color
           tabBarInactiveTintColor: "#999",  // Inactive tab color
           tabBarStyle: {
-            height: 60,
+            height: 52,
             paddingBottom: 6,
-            paddingTop: 6,
+            // paddingTop: 6,
             backgroundColor: "#fff",
-            borderTopWidth: 1,
-            borderTopColor: "#eee",
-            shadowColor: "#000",
-            shadowOpacity: 0.1,
+            // borderTopWidth: 1,
+            // borderTopColor: "#eee",
+            // shadowColor: "#000",
+            // shadowOpacity: 0.1,
             shadowOffset: { width: 0, height: -2 },
             shadowRadius: 4,
-            elevation: 5,
+            elevation: 0,
           },
           tabBarLabelStyle: {
             fontSize: 11,

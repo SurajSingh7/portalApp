@@ -16,8 +16,8 @@ const PortalHeaderComp = () => {
   }
 
   return (
-    <View className="bg-[#0f172a] h-14 w-full flex-row justify-between items-center px-4">
-      <Text className="text-white font-black text-base">NETRA</Text>
+    <View className="bg-[#0f172a] h-14 w-full flex-row justify-between items-center px-[1%]">
+      <Text className="text-white font-black text-base px-1">NETRA</Text>
        <MainMenuButton userData={userData} />
        <PortalProfileMenu userData={userData} />
     </View>

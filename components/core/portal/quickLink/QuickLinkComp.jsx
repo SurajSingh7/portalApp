@@ -31,7 +31,7 @@ const QuickLinkComp = () => {
   const tabList = [
     { id: "alias", label: "Username Alias" },
     { id: "changePassword", label: "Change Password" },
-    { id: "theme", label: "Theme" },
+    // { id: "theme", label: "Theme" },
   ]
 
   return (
